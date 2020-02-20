@@ -5,7 +5,7 @@ package model.data_structures;
  * @author Julian Padilla y Pablo Pastrana
  * @param <E> Tipo Generico
  */
-public interface ILinkedList <E> extends Iterable<E> 
+public interface ILinkedList <E> extends Iterable<E>
 {
 	/**
 	 * Retornar el numero de elementos presentes en el arreglo

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
+
 import com.google.gson.Gson;
 
 import Infracciones.Example;
@@ -22,11 +23,6 @@ public class Modelo
 	private LinkedList<Comparendo> datos1;
 
 	/**
-	 * Lista-cola de tipo Comparendos
-	 */
-	private LinkedQueue<Comparendo> datos2;
-
-	/**
 	 * Constructor del modelo del mundo
 	 */
 	public Modelo()
@@ -34,7 +30,6 @@ public class Modelo
 		Gson gson = new Gson();
 		BufferedReader br = null;
 		datos1 = new LinkedList<>();
-		datos2 = new LinkedQueue<>();
 
 		try
 		{
@@ -56,7 +51,6 @@ public class Modelo
 
 				Comparendo actual = new Comparendo(objective, fecha_hora, medio_dete, clase_vehi, tipo_servi, infraccion, des_infrac, localidad, cordenada1, cordenada2);
 				datos1.addNodeFirst(actual);
-				datos2.enqueue(actual);
 			}
 		}
 		catch(FileNotFoundException e)
@@ -87,96 +81,87 @@ public class Modelo
 	{
 		return datos1.getSize();
 	}
-	
+
 	/**
-	 * Muestra la informacion con el mayor OBJECTID encontrado en la lista
-	 * @return El comparendo con maoyr objectid encontrado
+	 * Metodo que retorna un string con la informacion basica del comparendo de acuerdo con la posicion
+	 * @param pPosicion Posicion del objeto
+	 * @return Retorna cadena de string con la informacion baica del comparendo
 	 */
-	public String darObjectidMayor()
+	public String darDatos(int pPosicion)
 	{
-		String mensaje = " ";
-		Comparendo actual = datos1.seeObjetc(0);
-		
-		Iterator<Comparendo> it = datos1.iterator();
-		while(it.hasNext())
-		{
-			Comparendo elemento = it.next();
-			if(elemento.getObjective() > actual.getObjective())
-			{
-				actual = elemento;
-			}
-		}
-		
-		mensaje = actual.getObjective() + ", " + actual.getFecha_hora() + ", " + actual.getInfraccion() + ", " + 
-                  actual.getClase_vehi() + ", " + actual.getTipo_servi() + ", " +  actual.getLocalidad();
-		
-		return mensaje;
-	}
-	
-	/**
-	 * Determina la sonaMiniMax para despues ser utilizado
-	 * @return Los limites teniendo en cuenta el rectangulo (la menor latitud, la menor longitud) y (la mayor latitud, la mayor longitud).
-	 */
-	public double[] darZonaMiniMax()
-	{
-		double[] rango = new double[4];
-		
-		double mayLa = 0;
-		double mayLo = datos1.seeObjetc(0).getCordenadas()[0];
-		double menLa = datos1.seeObjetc(0).getCordenadas()[1];
-		double menLo = 0;
-		
-		Iterator<Comparendo> it = datos1.iterator();
-		while(it.hasNext())
-		{
-			Comparendo elemento = it.next();
-			if(elemento.getCordenadas()[0] > mayLo)
-			{
-				mayLo = elemento.getCordenadas()[0];
-			}
-			else if(elemento.getCordenadas()[0] < menLo)
-			{
-				menLo = elemento.getCordenadas()[0];
-			}
-			
-			if(elemento.getCordenadas()[1] > mayLa)
-			{
-				mayLa = elemento.getCordenadas()[1];
-			}
-			else if(elemento.getCordenadas()[1] < menLa)
-			{
-				menLa = elemento.getCordenadas()[1];
-			}
-		}
-		
-		rango[0] = menLo;
-		rango[1] = mayLo;
-		rango[2] = menLa;
-		rango[3] = mayLa;
-		return rango;
+		String informacion = datos1.seeObjetc(pPosicion).getObjective() + ", " + datos1.seeObjetc(pPosicion).getFecha_hora() + ", " + datos1.seeObjetc(pPosicion).getInfraccion() + ", " + 
+				datos1.seeObjetc(pPosicion).getClase_vehi() + ", " + datos1.seeObjetc(pPosicion).getTipo_servi() + ", " + datos1.seeObjetc(pPosicion).getLocalidad();
+		return informacion;
 	}
 
 	/**
-	 * Retona una lista con los comparendos que se encuntran dentro de la ZonaMiniMax
-	 * @param pLongitudIn Longitud Inferior
-	 * @param pLatitudSu Latitud Superior
-	 * @param pLongitudSu Longitud Superior
-	 * @param pLatitudIn Latitud Inferior
-	 * @return Lista con los comparendos encontrados
+	 * Crea un arreglo comparable de los comparendos para poder ser utilizado en los sorts
+	 * @return Arreglo Comparable<Comparendos>
 	 */
-	public LinkedList<Comparendo> darComparendosZonaMinimax(double pLongitudIn, double pLatitudSu, double pLongitudSu, double pLatitudIn)
+	public Comparable<Comparendo>[] copiarComparendosArreglo()
 	{
-		LinkedList<Comparendo> nueva = new LinkedList<Comparendo>();
-		
+		@SuppressWarnings("unchecked")
+		Comparable<Comparendo>[] nuevo = (Comparable<Comparendo>[]) new Comparable[datos1.getSize()];
+
 		Iterator<Comparendo> it = datos1.iterator();
 		while(it.hasNext())
 		{
-			Comparendo elemento = it.next();
-			if(elemento.getCordenadas()[0] >= pLongitudIn && elemento.getCordenadas()[1] <= pLatitudSu && elemento.getCordenadas()[0] <= pLongitudSu)
+			for(int i = 0; i < datos1.getSize(); i++)
 			{
-				nueva.addNodeFirst(elemento);
+				Comparendo elementoActual = it.next();
+				nuevo[i] = new Comparendo(elementoActual.getObjective(), elementoActual.getFecha_hora(), elementoActual.getMedio_dete(), elementoActual.getClase_vehi(), elementoActual.getTipo_servi(), elementoActual.getInfraccion(), elementoActual.getDes_infrac(), elementoActual.getLocalidad(), elementoActual.getCordenadas()[0], elementoActual.getCordenadas()[1]);
 			}
 		}
-		return nueva;
+		
+		return nuevo;
+	}
+
+	/**
+	 * Este metodo se encarga de ordenar bajo el criterio de shellSort
+	 * Funcion principal: Shell sort es un algoritmo que primero clasifica los elementos muy separados entre sí y sucesivamente reduce el intervalo entre los elementos a clasificar.
+	 * @param a Comparendo de tipo compareble bajo el criterio de comparcion por fecha_hora, objectid depende del caso
+	 */
+	public static void shellSort(Comparable<Comparendo>[] a) 
+	{
+		int n = a.length;
+
+		int h = 1;
+		while (h < n/3) h = 3*h + 1; 
+
+		while (h >= 1) 
+		{
+			for (int i = h; i < n; i++) 
+			{
+				for (int j = i; j >= h && less(a[j], a[j-h]); j -= h) 
+				{
+					exch(a, j, j-h);
+				}
+			}
+			h /= 3;
+		}
+	}
+
+	/**
+	 * Se encarga de determinar si el comparendo es menor
+	 * @param v Comparendo1 de tipo coparable bajo el criterio de comparcion por fecha_hora, objectid depende del caso
+	 * @param w Comparendo2 de tipo coparable bajo el criterio de comparcion por fecha_hora, objectid depende del caso
+	 * @return True si es menor, false en el caso contrario
+	 */
+	private static boolean less(Comparable<Comparendo> v, Comparable<Comparendo> w) 
+	{
+		return v.compareTo((Comparendo) w) < 0;
+	}
+
+	/**
+	 * Cambia el objeto de una posicion a otra
+	 * @param a Objeto a intercambiar en el arreglo
+	 * @param i Posicion en i
+	 * @param j Posicion en j
+	 */
+	private static void exch(Object[] a, int i, int j) 
+	{
+		Object swap = a[i];
+		a[i] = a[j];
+		a[j] = swap;
 	}
 }
