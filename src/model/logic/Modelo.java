@@ -169,7 +169,7 @@ public class Modelo
 	/**
 	 * Este metodo se encarga de ordenar bajo el criterio de quickSort
 	 * Es un algoritmo basado en la técnica de divide y vencerás, que permite, en promedio, ordenar n elementos en un tiempo proporcional a n log n.
-	 * @param a Objeto a intercambiar en el arreglo
+	 * @param a Arreglo comparable de tipo comparendo a intercambiar en el arreglo
 	 * @param lo Indice de la posicion inicial
 	 * @param hi Indice de la posicion final
 	 */
@@ -183,7 +183,7 @@ public class Modelo
 
 	/**
 	 * Parte el arreglo en sub arreglos para ordenar de manera mas facil
-	 * @param a Objeto a intercambiar en el arreglo
+	 * @param a Arreglo comparable de tipo comparendo a intercambiar en el arreglo
 	 * @param lo Indice de la posicion inicial
 	 * @param hi Indice de la posicion final
 	 * @return Indice donde se realizo el corte del arreglos
@@ -214,39 +214,55 @@ public class Modelo
 	}
 
 	/**
-	 * 
-	 * @param a
-	 * @param aux
-	 * @param lo
-	 * @param mid
-	 * @param hi
+	 * Este metodo se encarga fusionar las partes de los subarreglos ordenados
+	 * @param a Arreglo comparable de tipo comparendo a intercambiar en el arreglo
+	 * @param aux Arreglo auxiliar  de tipo comparendo 
+	 * @param lo Indice de la posicion inicial
+	 * @param mid Indice de la posición de la mitad del arreglo
+	 * @param hi Indice de la posicion final
 	 */
-	public static void merge(Comparable<Comparendo>[] a, Comparable<Comparendo>[] aux, int lo, int mid, int hi) 
+	private static void merge(Comparable<Comparendo>[] a, Comparable<Comparendo>[] aux, int lo, int mid, int hi) 
 	{
-		for (int k = lo; k <= hi; k++)
-		{
+		// copy to aux[]
+		for (int k = lo; k <= hi; k++) {
 			aux[k] = a[k]; 
 		}
 
+		// merge back to a[]
 		int i = lo, j = mid+1;
-		for (int k = lo; k <= hi; k++) 
-		{
-			if(i > mid)            
-			{
-				a[k] = aux[j++];
-			}
-			else if(j > hi)           
-			{
-				a[k] = aux[i++];
-			}
-			else if(less(aux[j], aux[i]))
-			{
-				a[k] = aux[j++];
-			}
-			else                          
-			{
-				a[k] = aux[i++];
-			}
+		for (int k = lo; k <= hi; k++) {
+			if      (i > mid)              a[k] = aux[j++];
+			else if (j > hi)               a[k] = aux[i++];
+			else if (less(aux[j], aux[i])) a[k] = aux[j++];
+			else                           a[k] = aux[i++];
 		}
+	}
+
+	/**
+	 * Este metodo se encarga de ordenar bajo el criterio de mergeSort
+	 * @param a Arreglo comparable de tipo comparendo 
+	 * @param aux Arreglo auxiliar  de tipo comparendo
+	 * @param lo Indice de la posicion inicial
+	 * @param hi Indice de la posicion final
+	 */
+	public static void MergeSort(Comparable<Comparendo>[] a, Comparable<Comparendo>[] aux, int lo, int hi)
+	{
+		if (hi <= lo) return;
+		int mid = lo + (hi - lo) / 2;
+		MergeSort(a, aux, lo, mid);
+		MergeSort(a, aux, mid + 1, hi);
+		merge(a, aux, lo, mid, hi);
+	}
+
+	/**
+	 * Reorganiza la matriz en orden ascendente, usando el orden natural.
+	 * @param a La matriz a ser ordenada
+	 */
+	@SuppressWarnings("unchecked")
+	public static void sort(Comparable<Comparendo>[] a) 
+	{
+		@SuppressWarnings("rawtypes")
+		Comparable[] aux = new Comparable[a.length];
+		MergeSort(a, aux, 0, a.length-1);
 	}
 }

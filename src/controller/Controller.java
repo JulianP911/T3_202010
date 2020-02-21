@@ -81,7 +81,8 @@ public class Controller {
 			case 4:
 				Comparable<Comparendo> copia_Comparendos2 [ ] = modelo.copiarComparendosArreglo();
 				long startTime1 = System.currentTimeMillis();
-				Modelo.shellSort(copia_Comparendos2);
+				Modelo.sort(copia_Comparendos2);
+				Modelo.MergeSort(copia_Comparendos2, copia_Comparendos2, 0, copia_Comparendos2.length-1);
 				long endTime1 = System.currentTimeMillis();
 				long duration1 = endTime1 - startTime1;
 				view.printMessage("Tiempo de ordenamiento: " + duration1 + " en milisegundos \n");
