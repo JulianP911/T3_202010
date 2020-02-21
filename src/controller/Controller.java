@@ -77,8 +77,62 @@ public class Controller {
                 }
 				view.printMessage("\n");
 				break;
-
+				
 			case 4:
+				Comparable<Comparendo> copia_Comparendos2 [ ] = modelo.copiarComparendosArreglo();
+				long startTime1 = System.currentTimeMillis();
+				Modelo.shellSort(copia_Comparendos2);
+				long endTime1 = System.currentTimeMillis();
+				long duration1 = endTime1 - startTime1;
+				view.printMessage("Tiempo de ordenamiento: " + duration1 + " en milisegundos \n");
+               
+				view.printMessage("Los 10 primeros comparendos organizados por fecha_hora: \n" );
+				Comparendo nuevo4 = null;
+				for(int i = 0; i < 9; i++)
+                {
+					nuevo4 = (Comparendo) copia_Comparendos2[i];
+                	view.printMessage(nuevo4.getObjective() + ", " + nuevo4.getFecha_hora() + ", " + nuevo4.getInfraccion() + ", " + nuevo4.getClase_vehi() + ", " + nuevo4.getTipo_servi() + ", " + nuevo4.getLocalidad());
+                }
+				
+				view.printMessage("\n");
+				view.printMessage("Los 10 ulimos comparendos organizados por fecha_hora: \n" );
+				Comparendo nuevo5 = null;
+				for(int i = copia_Comparendos2.length - 10 ; i < copia_Comparendos2.length; i++)
+                {
+					nuevo5 = (Comparendo) copia_Comparendos2[i];
+                	view.printMessage(nuevo5.getObjective() + ", " + nuevo5.getFecha_hora() + ", " + nuevo5.getInfraccion() + ", " + nuevo5.getClase_vehi() + ", " + nuevo5.getTipo_servi() + ", " + nuevo5.getLocalidad());
+                }
+				view.printMessage("\n");
+				break;
+				
+			case 5:
+				Comparable<Comparendo> copia_Comparendos3 [ ] = modelo.copiarComparendosArreglo();
+				long startTime2 = System.currentTimeMillis();
+				Modelo.quickSort(copia_Comparendos3, 0, copia_Comparendos3.length - 1);
+				long endTime2 = System.currentTimeMillis();
+				long duration2 = endTime2 - startTime2;
+				view.printMessage("Tiempo de ordenamiento: " + duration2 + " en milisegundos \n");
+               
+				view.printMessage("Los 10 primeros comparendos organizados por fecha_hora: \n" );
+				Comparendo nuevo6 = null;
+				for(int i = 0; i < 9; i++)
+                {
+					nuevo6 = (Comparendo) copia_Comparendos3[i];
+                	view.printMessage(nuevo6.getObjective() + ", " + nuevo6.getFecha_hora() + ", " + nuevo6.getInfraccion() + ", " + nuevo6.getClase_vehi() + ", " + nuevo6.getTipo_servi() + ", " + nuevo6.getLocalidad());
+                }
+				
+				view.printMessage("\n");
+				view.printMessage("Los 10 ulimos comparendos organizados por fecha_hora: \n" );
+				Comparendo nuevo7 = null;
+				for(int i = copia_Comparendos3.length - 10 ; i < copia_Comparendos3.length; i++)
+                {
+					nuevo7 = (Comparendo) copia_Comparendos3[i];
+                	view.printMessage(nuevo7.getObjective() + ", " + nuevo7.getFecha_hora() + ", " + nuevo7.getInfraccion() + ", " + nuevo7.getClase_vehi() + ", " + nuevo7.getTipo_servi() + ", " + nuevo7.getLocalidad());
+                }
+				view.printMessage("\n");
+				break;
+
+			case 6:
 				view.printMessage("Hasta pronto"); 
 				lector.close();
 				fin = true;

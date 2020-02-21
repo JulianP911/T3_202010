@@ -13,7 +13,8 @@ import model.data_structures.*;
 
 /**
  * Definicion del modelo del mundo
- *
+ * Usamos metodos del Libro Algorithms 4 edition:
+ * 1. shellSort, less, exch, quickSort y partition elaborados por los autores: Robert Sedgewick y Kevin Wayne.
  */
 public class Modelo 
 {
@@ -112,7 +113,7 @@ public class Modelo
 				nuevo[i] = new Comparendo(elementoActual.getObjective(), elementoActual.getFecha_hora(), elementoActual.getMedio_dete(), elementoActual.getClase_vehi(), elementoActual.getTipo_servi(), elementoActual.getInfraccion(), elementoActual.getDes_infrac(), elementoActual.getLocalidad(), elementoActual.getCordenadas()[0], elementoActual.getCordenadas()[1]);
 			}
 		}
-		
+
 		return nuevo;
 	}
 
@@ -163,5 +164,89 @@ public class Modelo
 		Object swap = a[i];
 		a[i] = a[j];
 		a[j] = swap;
+	}
+
+	/**
+	 * Este metodo se encarga de ordenar bajo el criterio de quickSort
+	 * Es un algoritmo basado en la técnica de divide y vencerás, que permite, en promedio, ordenar n elementos en un tiempo proporcional a n log n.
+	 * @param a Objeto a intercambiar en el arreglo
+	 * @param lo Indice de la posicion inicial
+	 * @param hi Indice de la posicion final
+	 */
+	public static void quickSort(Comparable<Comparendo>[] a, int lo, int hi) 
+	{ 
+		if (hi <= lo) return;
+		int j = partition(a, lo, hi);
+		quickSort(a, lo, j-1);
+		quickSort(a, j+1, hi);
+	}
+
+	/**
+	 * Parte el arreglo en sub arreglos para ordenar de manera mas facil
+	 * @param a Objeto a intercambiar en el arreglo
+	 * @param lo Indice de la posicion inicial
+	 * @param hi Indice de la posicion final
+	 * @return Indice donde se realizo el corte del arreglos
+	 */
+	private static int partition(Comparable<Comparendo>[] a, int lo, int hi)
+	{
+		int i = lo;
+		int j = hi + 1;
+		Comparable<Comparendo> v = a[lo];
+		while (true) 
+		{ 
+			while (less(a[++i], v)) 
+			{
+				if (i == hi) break;
+			}
+
+			while (less(v, a[--j])) 
+			{
+				if (j == lo) break;      
+			}
+
+			if (i >= j) break;
+			exch(a, i, j);
+		}
+
+		exch(a, lo, j);
+		return j;
+	}
+
+	/**
+	 * 
+	 * @param a
+	 * @param aux
+	 * @param lo
+	 * @param mid
+	 * @param hi
+	 */
+	public static void merge(Comparable<Comparendo>[] a, Comparable<Comparendo>[] aux, int lo, int mid, int hi) 
+	{
+		for (int k = lo; k <= hi; k++)
+		{
+			aux[k] = a[k]; 
+		}
+
+		int i = lo, j = mid+1;
+		for (int k = lo; k <= hi; k++) 
+		{
+			if(i > mid)            
+			{
+				a[k] = aux[j++];
+			}
+			else if(j > hi)           
+			{
+				a[k] = aux[i++];
+			}
+			else if(less(aux[j], aux[i]))
+			{
+				a[k] = aux[j++];
+			}
+			else                          
+			{
+				a[k] = aux[i++];
+			}
+		}
 	}
 }
